@@ -19,6 +19,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Grant execute permission for mvnw
+        run: chmod +x mvnw
+
       - name: Build with Maven
         run: ./mvnw clean install
 
@@ -35,8 +38,8 @@ jobs:
           context: .
           push: true
           tags: |
-            vst.kr.ncr.ntruss.com/vst/my-app:latest
-            vst.kr.ncr.ntruss.com/vst/my-app:${{ github.sha }}
+            vst.kr.ncr.ntruss.com/vst/api-server:latest
+            vst.kr.ncr.ntruss.com/vst/api-server:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,11 +56,11 @@ jobs:
             echo "${{ secrets.NCP_SECRET_KEY }}" | docker login --username ${{ secrets.NCP_ACCESS_KEY }} --password-stdin vst.kr.ncr.ntruss.com
             
             echo "Pulling latest Docker image..."
-            docker pull vst.kr.ncr.ntruss.com/vst/my-app:latest
+            docker pull vst.kr.ncr.ntruss.com/vst/api-server:latest
             
             echo "Stopping old container..."
-            docker stop my-app || true
-            docker rm my-app || true
+            docker stop api-server || true
+            docker rm api-server || true
             
             echo "Starting new container..."
-            docker run -d -p 8080:8080 --name my-app vst.kr.ncr.ntruss.com/vst/api-server:latest
+            docker run -d -p 8080:8080 --name api-server vst.kr.ncr.ntruss.com/vst/api-server:latest
