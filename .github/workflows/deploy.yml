@@ -3,7 +3,7 @@ name: Build, Push to NCP, and Deploy
 on:
   push:
     branches:
-      - 7-feat-git-actions
+      - main
 
 jobs:
   build-and-push-to-ncp:
