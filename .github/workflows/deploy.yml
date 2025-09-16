@@ -53,14 +53,14 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             echo "Login to NCP Container Registry..."
-            echo "${{ secrets.NCP_SECRET_KEY }}" | sudo docker login --username ${{ secrets.NCP_ACCESS_KEY }} --password-stdin vst.kr.ncr.ntruss.com
+            echo "${{ secrets.NCP_SECRET_KEY }}" | docker login --username ${{ secrets.NCP_ACCESS_KEY }} --password-stdin vst.kr.ncr.ntruss.com
             
             echo "Pulling latest Docker image..."
-            sudo docker pull vst.kr.ncr.ntruss.com/vst/api-server:latest
+            docker pull vst.kr.ncr.ntruss.com/vst/api-server:latest
             
             echo "Stopping old container..."
-            sudo docker stop api-server || true
-            sudo docker rm api-server || true
+            docker stop api-server || true
+            docker rm api-server || true
             
             echo "Starting new container..."
-            sudo docker run -d -p 8080:8080 --name api-server vst.kr.ncr.ntruss.com/vst/api-server:latest
+            docker run -d -p 8080:8080 --name api-server vst.kr.ncr.ntruss.com/vst/api-server:latest
