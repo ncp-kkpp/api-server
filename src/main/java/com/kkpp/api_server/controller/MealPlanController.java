@@ -1,5 +1,8 @@
 package com.kkpp.api_server.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,15 +36,19 @@ public class MealPlanController {
     
 	@Operation(summary = "식단표 생성 API", description = "request로 전달받은 데이터를 토대로 DB에 식단표를 생성합니다.")
     @PostMapping(value = "/create")
-    public ResponseEntity<ResponseDto<Long>> createMealPlan(@Valid @RequestBody MealPlanDto request) {
+    public ResponseEntity<ResponseDto<HashMap<String, Object>>> createMealPlan(@Valid @RequestBody MealPlanDto request) {
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
 		
 		//TODO Spring Security 구현
 		String userId = "test@example.com"; //하드코딩
 		Long mealPlanId = mealPlanService.createMealPlan(userId, request);
+		data.put("meal_plan_id", mealPlanId);
 		
-		ResponseDto<Long> body = ResponseDto.<Long>builder()
+		
+		ResponseDto<HashMap<String, Object>> body = ResponseDto.<HashMap<String, Object>>builder()
 		        .success(true)
-		        .data(mealPlanId)
+		        .data(data)
 		        .build();
 	
 		return ResponseEntity
