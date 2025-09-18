@@ -1,8 +1,12 @@
 package com.kkpp.api_server.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MealPlanItemDto {
 
     private Long id;
