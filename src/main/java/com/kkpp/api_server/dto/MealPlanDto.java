@@ -20,11 +20,9 @@ public class MealPlanDto {
     private Integer basicMetabolism;
     private OffsetDateTime createdDt;
     private OffsetDateTime updatedDt;
+    
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MealPlanItemDto> items;
-
-    // --- 프론트 전용(옵션) 필드: DB에는 저장 안 함 ---
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    private String clientTag;
 
     public MealPlanDto() {}
 

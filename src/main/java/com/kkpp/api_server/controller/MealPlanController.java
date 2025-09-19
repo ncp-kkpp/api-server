@@ -1,7 +1,7 @@
 package com.kkpp.api_server.controller;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,14 +58,37 @@ public class MealPlanController {
 	
 	@Operation(summary = "식단표 목록 조회 API", description = "로그인 한 user가 가지고 있는 식단표 목록을 조회합니다.")
     @GetMapping(value = "/")
-    public String getMealPlanList() {
-    	return "식단표 목록 조회 API";
+    public ResponseEntity<ResponseDto<List<MealPlanDto>>> getMealPlanList() {
+		
+		//TODO Spring Security 구현
+		String userId = "test@example.com"; //하드코딩
+		List<MealPlanDto> data = mealPlanService.getMealPlanList(userId);
+		
+		ResponseDto<List<MealPlanDto>> body = ResponseDto.<List<MealPlanDto>>builder()
+											        .success(true)
+											        .data(data)
+											        .build();
+		
+		return ResponseEntity
+                .status(HttpStatus.OK)	
+                .body(body);
     }
 	
 	@Operation(summary = "식단표 조회 API", description = "식단표를 조회합니다.")
     @GetMapping(value = "/{meal_plan_id}")
-    public String getMealPlan(@PathVariable("meal_plan_id") int mealPlanId) {
-    	return "식단표 조회 API: " + mealPlanId;
+    public ResponseEntity<ResponseDto<MealPlanDto>> getMealPlan(@PathVariable("meal_plan_id")  Long mealPlanId) {
+		//TODO Spring Security 구현
+		String userId = "test@example.com"; //하드코딩
+		MealPlanDto data = mealPlanService.getMealPlan(userId, mealPlanId);
+		
+		ResponseDto<MealPlanDto> body = ResponseDto.<MealPlanDto>builder()
+												.success(true)
+												.data(data)
+												.build();
+				
+		return ResponseEntity
+                .status(HttpStatus.OK)	
+                .body(body);
     }
 	
 	@Operation(summary = "식단표 삭제 API", description = "식단표를 삭제합니다.")

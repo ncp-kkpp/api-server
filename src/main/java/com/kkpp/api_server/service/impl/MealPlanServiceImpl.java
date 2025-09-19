@@ -1,11 +1,14 @@
 package com.kkpp.api_server.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kkpp.api_server.dto.MealPlanDto;
+import com.kkpp.api_server.dto.MealPlanItemDto;
 import com.kkpp.api_server.entity.MealPlan;
 import com.kkpp.api_server.entity.MealPlanItem;
 import com.kkpp.api_server.mapper.MealPlanItemMapper;
@@ -52,4 +55,37 @@ public class MealPlanServiceImpl implements MealPlanService {
 		
 		return mealPlanId;
     }
+
+	@Override
+	public List<MealPlanDto> getMealPlanList(String userId) {
+		//TODO 본인 식단표 아닐 경우 예외 발생, 로그인 사용자 검증
+		
+		List<MealPlanDto> mealPlanList = mealPlanRepository.findAllByUserId(userId).stream()
+									.map(entity -> {
+											MealPlanDto dto = mealPlanMapper.toDto(entity);
+											return dto;
+									})
+									.toList();
+		return mealPlanList;
+	}
+
+	@Override
+	public MealPlanDto getMealPlan(String userId, Long mealPlanId) {
+		//TODO 로그인 사용자 검증, 본인 식단표 아닐 경우 예외 발생
+		
+		MealPlan mealPlanEntity = mealPlanRepository.findById(mealPlanId)
+			    .orElseThrow(() -> new RuntimeException("MealPlan not found: " + mealPlanId));
+
+		MealPlanDto mealPlanDto = mealPlanMapper.toDto(mealPlanEntity);
+		
+		List<MealPlanItemDto> items = mealPlanItemRepository
+		        .findAllByMealPlanId(mealPlanId, Sort.by(Sort.Order.asc("dayNo")))
+		        .stream()
+		        .map(entity -> mealPlanItemMapper.toDto(entity))
+		        .toList();
+		
+		mealPlanDto.setItems(items);
+
+		return mealPlanDto;
+	}
 }
