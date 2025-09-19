@@ -9,9 +9,9 @@ import com.kkpp.api_server.entity.MealPlanItem;
 @Mapper(componentModel = "spring")
 public interface MealPlanItemMapper {
 
-    @Mapping(source = "mealPlan.id", target = "mealPlanId")
+    @Mapping(source = "mealPlanId", target = "mealPlanId")
     MealPlanItemDto toDto(MealPlanItem entity);
 
-    @Mapping(source = "mealPlanId", target = "mealPlan.id")
+    @Mapping(source = "mealPlanId", target = "mealPlanId")
     MealPlanItem toEntity(MealPlanItemDto dto);
 }

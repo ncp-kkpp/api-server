@@ -19,10 +19,8 @@ public class MealPlanItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FK (ON DELETE CASCADE는 DB가 수행)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "meal_plan_id", nullable = false)
-    private MealPlan mealPlan;
+    @Column(name = "meal_plan_id", nullable = false)
+    private Long mealPlanId;
 
     @Column(name = "day_no", nullable = false)
     private Integer dayNo; // 1~31 (DB CHECK)
@@ -57,8 +55,8 @@ public class MealPlanItem {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public MealPlan getMealPlan() { return mealPlan; }
-    public void setMealPlan(MealPlan mealPlan) { this.mealPlan = mealPlan; }
+    public Long getMealPlanId() { return mealPlanId; }
+    public void setMealPlanId(Long mealPlanId) { this.mealPlanId = mealPlanId; }
 
     public Integer getDayNo() { return dayNo; }
     public void setDayNo(Integer dayNo) { this.dayNo = dayNo; }
