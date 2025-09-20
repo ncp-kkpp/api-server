@@ -75,7 +75,7 @@ public class MealPlanServiceImpl implements MealPlanService {
 		//TODO 로그인 사용자 검증, 본인 식단표 아닐 경우 예외 발생
 		
 		MealPlan mealPlanEntity = mealPlanRepository.findById(mealPlanId)
-			    .orElseThrow(() -> new RuntimeException("MealPlan not found: " + mealPlanId));
+			    .orElseThrow(() -> new EntityNotFoundException("MealPlan not found: " + mealPlanId));
 
 		MealPlanDto mealPlanDto = mealPlanMapper.toDto(mealPlanEntity);
 		

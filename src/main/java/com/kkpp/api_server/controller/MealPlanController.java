@@ -78,14 +78,23 @@ public class MealPlanController {
 	@Operation(summary = "식단표 조회 API", description = "식단표를 조회합니다.")
     @GetMapping(value = "/{meal_plan_id}")
     public ResponseEntity<ResponseDto<MealPlanDto>> getMealPlan(@PathVariable("meal_plan_id")  Long mealPlanId) {
+		ResponseDto<MealPlanDto> body = null;
 		//TODO Spring Security 구현
 		String userId = "test@example.com"; //하드코딩
-		MealPlanDto data = mealPlanService.getMealPlan(userId, mealPlanId);
 		
-		ResponseDto<MealPlanDto> body = ResponseDto.<MealPlanDto>builder()
-												.success(true)
-												.data(data)
-												.build();
+		try {
+			MealPlanDto data = mealPlanService.getMealPlan(userId, mealPlanId);
+			body = ResponseDto.<MealPlanDto>builder().success(true).data(data).build();
+		}
+		catch (EntityNotFoundException e) {
+			HashMap<String, Object> error = new HashMap<String, Object>();
+			error.put("code", "MEALPLAN.INVALID_MEAL_PLAN_ID");
+			error.put("message", "존재하지 않는 식단표 입니다.");
+			
+			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+		}
+		
 				
 		return ResponseEntity
                 .status(HttpStatus.OK)	
