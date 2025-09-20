@@ -1,7 +1,6 @@
 package com.kkpp.api_server.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,8 @@ import com.kkpp.api_server.mapper.MealPlanMapper;
 import com.kkpp.api_server.repository.MealPlanItemRepository;
 import com.kkpp.api_server.repository.MealPlanRepository;
 import com.kkpp.api_server.service.MealPlanService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Transactional
@@ -87,5 +88,15 @@ public class MealPlanServiceImpl implements MealPlanService {
 		mealPlanDto.setItems(items);
 
 		return mealPlanDto;
+	}
+
+	@Override
+	public boolean deleteMealPlan(String userId, Long mealPlanId) {
+		//TODO 로그인 사용자 검증, 본인 식단표 아닐 경우 예외 발생
+		if (!mealPlanRepository.existsById(mealPlanId)) {
+		    throw new EntityNotFoundException("MealPlan not found with id: " + mealPlanId);
+		}
+		mealPlanRepository.deleteById(mealPlanId);
+		return true;
 	}
 }

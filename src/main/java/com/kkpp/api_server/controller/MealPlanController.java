@@ -20,6 +20,7 @@ import com.kkpp.api_server.service.MealPlanService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @Tag(name = "meal-plan", description = "식단표 관련 API")
@@ -92,10 +93,27 @@ public class MealPlanController {
     }
 	
 	@Operation(summary = "식단표 삭제 API", description = "식단표를 삭제합니다.")
-    @DeleteMapping(value = "/{meal_plan_id}")
-    public String deleteMealPlan(@PathVariable("meal_plan_id") int mealPlanId) {
-    	return "식단표 삭제 API: " + mealPlanId;
-    }
+    @DeleteMapping(value = "/delete/{meal_plan_id}")
+    public ResponseEntity<ResponseDto<MealPlanDto>> deleteMealPlan(@PathVariable("meal_plan_id") Long mealPlanId) {
+		ResponseDto<MealPlanDto> body = null;
+		//TODO Spring Security 구현
+		String userId = "test@example.com"; // 하드코딩
+		
+		try {
+			boolean success = mealPlanService.deleteMealPlan(userId, mealPlanId);
+			body = ResponseDto.<MealPlanDto>builder().success(success).build();
+		}
+		catch (EntityNotFoundException e) {
+			HashMap<String, Object> error = new HashMap<String, Object>();
+			error.put("code", "MEALPLAN.INVALID_MEAL_PLAN_ID");
+			error.put("message", "존재하지 않는 식단표 입니다.");
+			
+			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(body);
+	}
 
 }
 
