@@ -63,4 +63,8 @@ jobs:
             docker rm api-server || true
             
             echo "Starting new container..."
-            docker run -d -p 8080:8080 --name api-server vst.kr.ncr.ntruss.com/vst/api-server:latest
+            docker run -d -p 8080:8080 --name api-server \
+              -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
+              -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              vst.kr.ncr.ntruss.com/vst/api-server:latest
