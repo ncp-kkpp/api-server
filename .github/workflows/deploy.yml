@@ -3,7 +3,7 @@ name: Build, Push to NCP, and Deploy
 on:
   push:
     branches:
-      - 11-fix-git-actions-maven-error
+      - main
 
 jobs:
   build-and-push-to-ncp:
