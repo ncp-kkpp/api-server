@@ -114,7 +114,7 @@ public class MealPlanController {
 		}
 		catch (EntityNotFoundException e) {
 			HashMap<String, Object> error = new HashMap<String, Object>();
-			error.put("code", "MEALPLAN.INVALID_MEAL_PLAN_ID");
+			error.put("code", "MEALPLAN.INVALID_ID");
 			error.put("message", "존재하지 않는 식단표 입니다.");
 			
 			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
