@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kkpp.api_server.dto.request.SignupRequest;
+import com.kkpp.api_server.dto.request.UserRequest;
 import com.kkpp.api_server.dto.response.UserResponse;
 import com.kkpp.api_server.entity.User;
 import com.kkpp.api_server.mapper.UserMapper;
@@ -28,7 +28,7 @@ public class UserService {
 
 
 	@Transactional
-	public UserResponse join(SignupRequest req) {
+	public UserResponse join(UserRequest req) {
 		if (userRepository.existsByLoginId(req.getLoginId())) {
 			throw new DataIntegrityViolationException("login_id");
 		}

@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class SignupRequest {
+public class UserRequest {
 @NotBlank
 @Size(max = 320)
 @Email

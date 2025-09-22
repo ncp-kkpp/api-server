@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kkpp.api_server.dto.MealPlanDto;
-import com.kkpp.api_server.dto.request.SignupRequest;
+import com.kkpp.api_server.dto.request.UserRequest;
 import com.kkpp.api_server.dto.response.ResponseDto;
 import com.kkpp.api_server.dto.response.UserResponse;
 import com.kkpp.api_server.service.impl.UserService;
@@ -36,7 +35,7 @@ private final UserService userService;
     }
 
 	@PostMapping("/join")
-		public ResponseEntity<ResponseDto<UserResponse>> join(@Valid @RequestBody SignupRequest request) {
+		public ResponseEntity<ResponseDto<UserResponse>> join(@Valid @RequestBody UserRequest request) {
 		ResponseDto<UserResponse> body = null;
 		UserResponse data = null;
 		try {
