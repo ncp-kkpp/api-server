@@ -2,6 +2,8 @@ package com.kkpp.api_server.service.impl;
 
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +39,24 @@ public class UserService {
 		}
 	
 		String passwordHash = passwordEncoder.encode(req.getPassword());
-		User user = userMapper.toEntityFromSignup(req.getLoginId(),	req.getName(), passwordHash);
+		User user = userMapper.toEntityFromRequest(req.getLoginId(), req.getName(), passwordHash);
 		User saved = userRepository.save(user);
 		return userMapper.toResponse(saved);
+	}
+	
+	@Transactional
+	public UsernamePasswordAuthenticationToken loginAndIssueToken(UserRequest body) {
+		// 아이디 존재 여부 검증
+		User user = userRepository.findByLoginIdAndDelYn(body.getLoginId(), "N")
+				.orElseThrow(() -> new BadCredentialsException("BAD_CREDENTIALS"));
+		// 비밀번호 검증
+		if (!passwordEncoder.matches(body.getPassword(), user.getPasswordHash())) {
+			throw new BadCredentialsException("BAD_CREDENTIALS");
+		}
+		// 인증 토큰 생성
+		var authentication = new UsernamePasswordAuthenticationToken(userMapper.toResponse(user), null,
+				java.util.Collections.emptyList());
+
+		return authentication;
 	}
 }

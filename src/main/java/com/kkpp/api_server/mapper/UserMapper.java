@@ -10,8 +10,7 @@ import com.kkpp.api_server.entity.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-	User toEntityFromSignup(String loginId, String name, String passwordHash);
+	User toEntityFromRequest(String loginId, String name, String passwordHash);
 
-
-UserResponse toResponse(User user);
+	UserResponse toResponse(User user);
 }

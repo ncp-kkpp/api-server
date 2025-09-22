@@ -35,7 +35,7 @@ public class SecurityConfig {
             // 엔드포인트별 접근 제어
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/", "/hello", "/auth/join", "/auth/*").permitAll()
+                .requestMatchers("/error", "/error/**", "/", "/hello", "/auth/*").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/login").permitAll()
                 .anyRequest().authenticated()
             )
