@@ -42,12 +42,10 @@ public class MealPlanServiceImpl implements MealPlanService {
 		mealPlanRepository.save(mealPlanEntity);
 		Long mealPlanId = mealPlanEntity.getId();
 		
-		//List<MealPlanItemDto> items = mealPlanDto.getItems().stream();
-		
 		List<MealPlanItem> items = mealPlanDto.getItems().stream()
 		        .map(dto -> {
 		            MealPlanItem entity = mealPlanItemMapper.toEntity(dto);
-		            entity.setMealPlanId(mealPlanId); // FK 매핑 필요
+		            entity.setMealPlanId(mealPlanId);
 		            return entity;
 		        })
 		        .toList();
@@ -59,7 +57,6 @@ public class MealPlanServiceImpl implements MealPlanService {
 
 	@Override
 	public List<MealPlanDto> getMealPlanList(String userId) {
-		//TODO 본인 식단표 아닐 경우 예외 발생, 로그인 사용자 검증
 		
 		List<MealPlanDto> mealPlanList = mealPlanRepository.findAllByUserId(userId).stream()
 									.map(entity -> {
@@ -72,11 +69,14 @@ public class MealPlanServiceImpl implements MealPlanService {
 
 	@Override
 	public MealPlanDto getMealPlan(String userId, Long mealPlanId) {
-		//TODO 로그인 사용자 검증, 본인 식단표 아닐 경우 예외 발생
 		
 		MealPlan mealPlanEntity = mealPlanRepository.findById(mealPlanId)
-			    .orElseThrow(() -> new EntityNotFoundException("MealPlan not found: " + mealPlanId));
-
+			    .orElseThrow(() -> new EntityNotFoundException("식단표가 존재하지 않습니다."));
+		
+		if(!mealPlanEntity.getUserId().equals(userId)) {
+			throw new EntityNotFoundException("식단표가 존재하지 않습니다.");
+		}
+		
 		MealPlanDto mealPlanDto = mealPlanMapper.toDto(mealPlanEntity);
 		
 		List<MealPlanItemDto> items = mealPlanItemRepository
@@ -92,9 +92,8 @@ public class MealPlanServiceImpl implements MealPlanService {
 
 	@Override
 	public boolean deleteMealPlan(String userId, Long mealPlanId) {
-		//TODO 로그인 사용자 검증, 본인 식단표 아닐 경우 예외 발생
-		if (!mealPlanRepository.existsById(mealPlanId)) {
-		    throw new EntityNotFoundException("MealPlan not found with id: " + mealPlanId);
+		if (!mealPlanRepository.existsByIdAndUserId(mealPlanId, userId)) {
+		    throw new EntityNotFoundException("식단표가 존재하지 않습니다.");
 		}
 		mealPlanRepository.deleteById(mealPlanId);
 		return true;
