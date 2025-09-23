@@ -99,8 +99,7 @@ public class AuthController {
         SecurityContextHolder.setContext(context);
         contextRepository.saveContext(context, request, response);
         
-        User user = (User) auth.getPrincipal();
-        UserResponse data = userMapper.toResponse(user);
+        UserResponse data = (UserResponse) auth.getPrincipal();
         		
         body = ResponseDto.<UserResponse>builder().success(true).data(data).build();
         return ResponseEntity.status(HttpStatus.OK).body(body);
@@ -116,16 +115,19 @@ public class AuthController {
 		ResponseDto<Object> body = ResponseDto.<Object>builder().success(true).build();
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
-
+	
+	//테스트용
+	/*
 	@GetMapping("/me")
 	public ResponseEntity<?> me() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
 			return ResponseEntity.status(401).body(Map.of("ok", false, "error", "UNAUTHORIZED"));
 		}
-		User u = (User) auth.getPrincipal();
+		UserResponse u  = (UserResponse) auth.getPrincipal();
 		return ResponseEntity.ok(Map.of("ok", true, "login_id", u.getLoginId(), "name", u.getName()));
 	}
+	*/
 
 
 }
