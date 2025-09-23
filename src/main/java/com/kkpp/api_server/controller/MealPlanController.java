@@ -92,10 +92,10 @@ public class MealPlanController {
 			error.put("message", "존재하지 않는 식단표 입니다.");
 			
 			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
+			
 			return ResponseEntity.status(HttpStatus.OK).body(body);
 		}
 		
-				
 		return ResponseEntity
                 .status(HttpStatus.OK)	
                 .body(body);
@@ -118,6 +118,7 @@ public class MealPlanController {
 			error.put("message", "존재하지 않는 식단표 입니다.");
 			
 			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
+			
 			return ResponseEntity.status(HttpStatus.OK).body(body);
 		}
 
