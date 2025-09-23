@@ -1,0 +1,62 @@
+package com.kkpp.api_server.service.impl;
+
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kkpp.api_server.dto.request.UserRequest;
+import com.kkpp.api_server.dto.response.UserResponse;
+import com.kkpp.api_server.entity.User;
+import com.kkpp.api_server.mapper.UserMapper;
+import com.kkpp.api_server.repository.UserRepository;
+
+
+@Service
+public class UserService {
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final UserMapper userMapper;
+
+
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.userMapper = userMapper;
+	}
+
+
+	@Transactional
+	public UserResponse join(UserRequest req) {
+		if (userRepository.existsByLoginId(req.getLoginId())) {
+			throw new DataIntegrityViolationException("login_id");
+		}
+		if (userRepository.existsByName(req.getName())) {
+			throw new DataIntegrityViolationException("name");
+		}
+	
+		String passwordHash = passwordEncoder.encode(req.getPassword());
+		User user = userMapper.toEntityFromRequest(req.getLoginId(), req.getName(), passwordHash);
+		User saved = userRepository.save(user);
+		return userMapper.toResponse(saved);
+	}
+	
+	@Transactional
+	public UsernamePasswordAuthenticationToken loginAndIssueToken(UserRequest body) {
+		// 아이디 존재 여부 검증
+		User user = userRepository.findByLoginIdAndDelYn(body.getLoginId(), "N")
+				.orElseThrow(() -> new BadCredentialsException("BAD_CREDENTIALS"));
+		// 비밀번호 검증
+		if (!passwordEncoder.matches(body.getPassword(), user.getPasswordHash())) {
+			throw new BadCredentialsException("BAD_CREDENTIALS");
+		}
+		// 인증 토큰 생성
+		var authentication = new UsernamePasswordAuthenticationToken(userMapper.toResponse(user), null,
+				java.util.Collections.emptyList());
+
+		return authentication;
+	}
+}
