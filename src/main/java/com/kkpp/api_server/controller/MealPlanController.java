@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kkpp.api_server.dto.MealPlanDto;
 import com.kkpp.api_server.dto.response.ResponseDto;
+import com.kkpp.api_server.dto.response.UserResponse;
 import com.kkpp.api_server.service.MealPlanService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,12 +39,11 @@ public class MealPlanController {
     
 	@Operation(summary = "식단표 생성 API", description = "request로 전달받은 데이터를 토대로 DB에 식단표를 생성합니다.")
     @PostMapping(value = "/create")
-    public ResponseEntity<ResponseDto<HashMap<String, Object>>> createMealPlan(@Valid @RequestBody MealPlanDto request) {
+    public ResponseEntity<ResponseDto<HashMap<String, Object>>> createMealPlan(@AuthenticationPrincipal UserResponse user, @Valid @RequestBody MealPlanDto request) {
 		
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		
-		//TODO Spring Security 구현
-		String userId = "test@example.com"; //하드코딩
+		String userId = user.getLoginId();
 		Long mealPlanId = mealPlanService.createMealPlan(userId, request);
 		data.put("meal_plan_id", mealPlanId);
 		
@@ -59,10 +60,9 @@ public class MealPlanController {
 	
 	@Operation(summary = "식단표 목록 조회 API", description = "로그인 한 user가 가지고 있는 식단표 목록을 조회합니다.")
     @GetMapping(value = "/")
-    public ResponseEntity<ResponseDto<List<MealPlanDto>>> getMealPlanList() {
+    public ResponseEntity<ResponseDto<List<MealPlanDto>>> getMealPlanList(@AuthenticationPrincipal UserResponse user) {
 		
-		//TODO Spring Security 구현
-		String userId = "test@example.com"; //하드코딩
+		String userId = user.getLoginId();
 		List<MealPlanDto> data = mealPlanService.getMealPlanList(userId);
 		
 		ResponseDto<List<MealPlanDto>> body = ResponseDto.<List<MealPlanDto>>builder()
@@ -77,10 +77,10 @@ public class MealPlanController {
 	
 	@Operation(summary = "식단표 조회 API", description = "식단표를 조회합니다.")
     @GetMapping(value = "/{meal_plan_id}")
-    public ResponseEntity<ResponseDto<MealPlanDto>> getMealPlan(@PathVariable("meal_plan_id")  Long mealPlanId) {
+    public ResponseEntity<ResponseDto<MealPlanDto>> getMealPlan(@AuthenticationPrincipal UserResponse user, @PathVariable("meal_plan_id")  Long mealPlanId) {
 		ResponseDto<MealPlanDto> body = null;
-		//TODO Spring Security 구현
-		String userId = "test@example.com"; //하드코딩
+		
+		String userId = user.getLoginId();
 		
 		try {
 			MealPlanDto data = mealPlanService.getMealPlan(userId, mealPlanId);
@@ -92,7 +92,7 @@ public class MealPlanController {
 			error.put("message", "존재하지 않는 식단표 입니다.");
 			
 			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+			return ResponseEntity.status(HttpStatus.OK).body(body);
 		}
 		
 				
@@ -103,10 +103,10 @@ public class MealPlanController {
 	
 	@Operation(summary = "식단표 삭제 API", description = "식단표를 삭제합니다.")
     @DeleteMapping(value = "/delete/{meal_plan_id}")
-    public ResponseEntity<ResponseDto<MealPlanDto>> deleteMealPlan(@PathVariable("meal_plan_id") Long mealPlanId) {
+    public ResponseEntity<ResponseDto<MealPlanDto>> deleteMealPlan(@AuthenticationPrincipal UserResponse user, @PathVariable("meal_plan_id") Long mealPlanId) {
 		ResponseDto<MealPlanDto> body = null;
-		//TODO Spring Security 구현
-		String userId = "test@example.com"; // 하드코딩
+		
+		String userId = user.getLoginId();
 		
 		try {
 			boolean success = mealPlanService.deleteMealPlan(userId, mealPlanId);
@@ -118,13 +118,10 @@ public class MealPlanController {
 			error.put("message", "존재하지 않는 식단표 입니다.");
 			
 			body = ResponseDto.<MealPlanDto>builder().success(false).error(error).build();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+			return ResponseEntity.status(HttpStatus.OK).body(body);
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
 }
-
-
-
