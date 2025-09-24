@@ -35,8 +35,8 @@ public class SecurityConfig {
             // 엔드포인트별 접근 제어
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/error", "/error/**", "/", "/auth/*", "swagger-ui/*", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/error", "/error/**", "/", "/auth/*").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/login").permitAll()
                 .anyRequest().authenticated()
             )
@@ -47,10 +47,12 @@ public class SecurityConfig {
             // CSRF (SPA에서 쿠키에 토큰 뿌려주기)
             .csrf(csrf -> csrf
                 .csrfTokenRepository(repo)
-                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"),
-                		new AntPathRequestMatcher("/v3/api-docs/**"),
-                        new AntPathRequestMatcher("/swagger-ui/**"),
-                        new AntPathRequestMatcher("/swagger-ui.html"))
+						.ignoringRequestMatchers(new AntPathRequestMatcher(
+								"/h2-console/**")/*
+													 * , new AntPathRequestMatcher("/v3/api-docs/**"), new
+													 * AntPathRequestMatcher("/swagger-ui/**"), new
+													 * AntPathRequestMatcher("/swagger-ui.html")
+													 */)
             )
 
             // CORS (Next.js 개발 도메인 허용)
