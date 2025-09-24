@@ -8,11 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +23,7 @@ import com.kkpp.api_server.config.Groups;
 import com.kkpp.api_server.dto.request.UserRequest;
 import com.kkpp.api_server.dto.response.ResponseDto;
 import com.kkpp.api_server.dto.response.UserResponse;
-import com.kkpp.api_server.entity.User;
 import com.kkpp.api_server.mapper.UserMapper;
-import com.kkpp.api_server.repository.UserRepository;
 import com.kkpp.api_server.service.impl.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,8 +44,10 @@ public class AuthController {
 	}
 	
 	@GetMapping("/xsrf-token")
-	public Map<String, String> csrf(org.springframework.security.web.csrf.CsrfToken token) {
-		return Map.of("XSRF-TOKEN", token.getToken());
+	public Map<String, String> csrf(HttpServletRequest request) {
+		var token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+
+		return Map.of(token.getHeaderName(), token.getToken());
 	}
 
 	@PostMapping("/join")
