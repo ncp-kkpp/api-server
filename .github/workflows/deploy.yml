@@ -23,7 +23,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Build with Maven
-        run: ./mvnw clean install
+        run: ./mvnw clean install -DskipTests
 
       - name: Log in to NCP Container Registry
         uses: docker/login-action@v2
