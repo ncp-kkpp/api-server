@@ -63,14 +63,6 @@ jobs:
             docker rm api-server || true
             
             echo "Starting new container..."
-            echo ${{ secrets.DB_URL }}
-            echo ${{ secrets.DB_USERNAME }}
-            echo ${{ secrets.DB_PASSWORD }}
-            echo "==============================="
-            echo "==============================="
-            echo "==============================="
-            echo "==============================="
-            echo "==============================="
             docker run -d -p 8080:8080 --name api-server \
               -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
               -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
