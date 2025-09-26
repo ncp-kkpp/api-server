@@ -48,7 +48,7 @@ public class FreqIngredientController {
     }
 	
 	@Operation(summary = "자주 검색하는 식재료 조회 API", description = "로그인 한 user가 자주 검색한 식재료 상위 10가지 목록을 조회합니다.")
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity<ResponseDto<List<FreqIngredientDto>>> getFreqIngrdt(@AuthenticationPrincipal UserResponse user) {
 		
 		String userId = user.getLoginId();
