@@ -59,7 +59,7 @@ public class MealPlanController {
     }
 	
 	@Operation(summary = "식단표 목록 조회 API", description = "로그인 한 user가 가지고 있는 식단표 목록을 조회합니다.")
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity<ResponseDto<List<MealPlanDto>>> getMealPlanList(@AuthenticationPrincipal UserResponse user) {
 		
 		String userId = user.getLoginId();
