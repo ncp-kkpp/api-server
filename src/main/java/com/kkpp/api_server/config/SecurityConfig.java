@@ -76,7 +76,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         var cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:3000", "https://your-nextjs-domain.com"));
+        cfg.setAllowedOrigins(List.of("http://localhost:3000", "http://49.50.131.3:3000", "http://49.50.131.3"));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("Content-Type", "X-XSRF-TOKEN", "Authorization"));
         cfg.setAllowCredentials(true); // 세션 쿠키 전달
